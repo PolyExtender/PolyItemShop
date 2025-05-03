@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Quantico:wght@400;700&display=swap" rel="stylesheet">
+  <title>FNSHOP - Ultimate Fortnite Shop Tracker</title>
+  <style>
+    :root {
+      --primary-color: #00e8fc;
+      --primary-dark: #00bbff;
+      --secondary-color: #ff6b6b;
+      --background: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #ffffff;
+      --accent: #ff00ff;
+      
+      /* Rarity Colors */
+      --common-color: #b1b1b1;
+      --uncommon-color: #60aa3a;
+      --rare-color: #49acf2;
+      --epic-color: #b15be2;
+      --legendary-color: #e88e2e;
+      --mythic-color: #f2d13c;
+      --marvel-color: #ed1d24;
+      --dc-color: #0476f4;
+      --icon-color: #009ddc;
+      --frozen-color: #99d9ea;
+      --lava-color: #ea8d23;
+      --slurp-color: #18e2c8;
+      --shadow-color: #636363;
+      --dark-color: #000000;
+      --starwars-color: #0a0a0a;
+      --gaming-color: #bc00c6;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-color);
+      font-family: 'Rajdhani', sans-serif;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(0, 232, 252, 0.05) 0%, transparent 50%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, var(--background) 100%);
+      background-attachment: fixed;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--background);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Header styles */
+    header {
+      background: transparent;
+    }
+
+    nav {
+      background: linear-gradient(90deg, var(--background) 0%, rgba(0, 187, 255, 0.1) 50%, var(--background) 100%);
+      box-shadow: 0 3px 15px rgba(0, 232, 252, 0.2);
+      border-bottom: 1px solid rgba(0, 232, 252, 0.3);
+      padding: 0 20px;
+      margin-bottom: 30px;
+    }
+
+    .brand-logo {
+      font-family: 'Quantico', sans-serif;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--primary-color);
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-logo:before {
+      content: '';
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-image: url('https://api.placeholder.com/150?text=FN');
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin-right: 10px;
+    }
+
+    nav ul a {
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
+    }
+
+    nav ul a:hover {
+      background-color: rgba(0, 232, 252, 0.1);
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    nav ul a.active {
+      border-bottom: 2px solid var(--primary-color);
+      background-color: rgba(0, 232, 252, 0.1);
+    }
+
+    h3 {
+      font-family: 'Quantico', sans-serif;
+      font-weight: 700;
+      color: var(--text-color);
+      text-transform: uppercase;
+      text-shadow: 0 0 10px var(--primary-color);
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+    }
+
+    h3:after {
+      content: '';
+      display: block;
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), transparent);
+      margin: 10px auto;
+    }
+
+    /* Shop date styling */
+    .shop-date {
+      font-size: 1.5rem;
+      color: var(--text-color);
+      margin: 20px 0 30px;
+      text-align: center;
+      font-weight: 600;
+      background-color: rgba(0, 232, 252, 0.05);
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid rgba(0, 232, 252, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Section styling */
+    .section {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 232, 252, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    }
+
+    .section h4 {
+      font-family: 'Quantico', sans-serif;
+      font-weight: 700;
+      color: var(--primary-color);
+      border-bottom: 2px solid rgba(0, 232, 252, 0.2);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+    }
+
+    .section h4:before {
+      content: '⬢';
+      margin-right: 10px;
+      color: var(--primary-color);
+    }
+
+    /* Item grid */
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* Item card styling */
+    .collection {
+      border: none;
+    }
+
+    .collection-item {
+      background-color: rgba(30, 30, 30, 0.7);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+    }
+
+    .collection-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 232, 252, 0.3);
+    }
+
+    .collection-item:before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: radial-gradient(circle, rgba(0, 232, 252, 0.1) 0%, transparent 70%);
+      transition: all 0.5s ease;
+      z-index: -1;
+    }
+
+    .collection-item:hover:before {
+      top: -50%;
+      left: -50%;
+    }
+
+    .title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-align: center;
+      color: var(--text-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      width: 100%;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Image container */
+    .image-container {
+      position: relative;
+      margin: 15px 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    .item-image {
+      max-width: 100%;
+      width: 180px;
+      height: auto;
+      margin: 5px 0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .collection-item:hover .item-image {
+      transform: scale(1.05);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .item-image.error {
+      background-image: url('https://api.placeholder.com/150?text=No+Image');
+      background-size: cover;
+      width: 180px;
+      height: 180px;
+    }
+
+    /* Item details styling */
+    .item-details {
+      margin-top: 15px;
+      width: 100%;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .item-details p {
+      margin: 8px 0;
+      font-size: 1rem;
+    }
+
+    /* Bundle info styling */
+    .bundle-info {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      text-align: center;
+      border: 1px solid rgba(0, 232, 252, 0.1);
+    }
+
+    .bundle-info h6 {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Loading indicator */
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 1.5em;
+      color: var(--primary-color);
+    }
+
+    .spinner-blue, .spinner-blue-only {
+      border-color: var(--primary-color);
+    }
+
+    /* V-Bucks styling */
+    .vbucks {
+      color: var(--primary-color);
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .vbucks:before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      background-image: url('https://api.placeholder.com/150?text=V');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    /* Toast styling */
+    .toast {
+      background-color: rgba(0, 232, 252, 0.2);
+      border: 1px solid var(--primary-color);
+      color: var(--text-color);
+      font-weight: 600;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Rarity borders */
+    .common-border {
+      border: 3px solid var(--common-color);
+      box-shadow: 0 0 15px rgba(177, 177, 177, 0.5);
+    }
+    .uncommon-border {
+      border: 3px solid var(--uncommon-color);
+      box-shadow: 0 0 15px rgba(96, 170, 58, 0.5);
+    }
+    .rare-border {
+      border: 3px solid var(--rare-color);
+      box-shadow: 0 0 15px rgba(73, 172, 242, 0.5);
+    }
+    .epic-border {
+      border: 3px solid var(--epic-color);
+      box-shadow: 0 0 15px rgba(177, 91, 226, 0.5);
+    }
+    .legendary-border {
+      border: 3px solid var(--legendary-color);
+      box-shadow: 0 0 15px rgba(232, 142, 46, 0.5);
+    }
+    .mythic-border {
+      border: 3px solid var(--mythic-color);
+      box-shadow: 0 0 15px rgba(242, 209, 60, 0.5);
+    }
+    .marvel-border {
+      border: 3px solid var(--marvel-color);
+      box-shadow: 0 0 15px rgba(237, 29, 36, 0.5);
+    }
+    .dc-border {
+      border: 3px solid var(--dc-color);
+      box-shadow: 0 0 15px rgba(4, 118, 244, 0.5);
+    }
+    .icon-border {
+      border: 3px solid var(--icon-color);
+      box-shadow: 0 0 15px rgba(0, 157, 220, 0.5);
+    }
+    .frozen-border {
+      border: 3px solid var(--frozen-color);
+      box-shadow: 0 0 15px rgba(153, 217, 234, 0.5);
+    }
+    .lava-border {
+      border: 3px solid var(--lava-color);
+      box-shadow: 0 0 15px rgba(234, 141, 35, 0.5);
+    }
+    .slurp-border {
+      border: 3px solid var(--slurp-color);
+      box-shadow: 0 0 15px rgba(24, 226, 200, 0.5);
+    }
+    .shadow-border {
+      border: 3px solid var(--shadow-color);
+      box-shadow: 0 0 15px rgba(99, 99, 99, 0.5);
+    }
+    .dark-border {
+      border: 3px solid var(--dark-color);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+    .starwars-border {
+      border: 3px solid var(--starwars-color);
+      box-shadow: 0 0 15px rgba(10, 10, 10, 0.5);
+    }
+    .gaming-border {
+      border: 3px solid var(--gaming-color);
+      box-shadow: 0 0 15px rgba(188, 0, 198, 0.5);
+    }
+
+    /* Rarity text */
+    .common { color: var(--common-color); }
+    .uncommon { color: var(--uncommon-color); }
+    .rare { color: var(--rare-color); }
+    .epic { color: var(--epic-color); }
+    .legendary { color: var(--legendary-color); }
+    .mythic { color: var(--mythic-color); }
+    .marvel { color: var(--marvel-color); }
+    .dc { color: var(--dc-color); }
+    .icon { color: var(--icon-color); }
+    .frozen { color: var(--frozen-color); }
+    .lava { color: var(--lava-color); }
+    .slurp { color: var(--slurp-color); }
+    .shadow { color: var(--shadow-color); }
+    .dark { color: var(--dark-color); }
+    .starwars { color: var(--starwars-color); }
+    .gaming { color: var(--gaming-color); }
+
+    /* Badge styles */
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 5px;
+      background-color: rgba(0, 0, 0, 0.3);
+      color: var(--text-color);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+      .item-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 15px;
+      }
+      
+      .title {
+        font-size: 1.2rem;
+      }
+      
+      .item-details p {
+        font-size: 0.9rem;
+      }
+      
+      .shop-date {
+        font-size: 1.2rem;
+      }
+    }
+    
+    /* Footer styles */
+    footer {
+      background-color: var(--card-bg);
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+      border-top: 1px solid rgba(0, 232, 252, 0.1);
+      margin-top: 40px;
+    }
+
+    footer p {
+      color: var(--text-color);
+      opacity: 0.7;
+      margin: 5px 0;
+      font-size: 0.9rem;
+    }
+    
+    footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    footer a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="nav-wrapper container">
+        <a href="#" class="brand-logo">FNSHOP</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="https://polyextender.github.io/PolyStreamLookup/">PolyStreamLookup</a></li>
+          <li><a href="https://polyextender.github.io/PolyCosmetic/">PolyCosmetic</a></li>
+          <li><a href="https://polyextender.github.io/PolyItemShop/" class="active">PolyItemShop</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h3 class="center-align">Fortnite Item Shop</h3>
+    <div id="shop-date" class="shop-date">
+      <i class="fas fa-calendar-alt"></i> Loading today's shop...
+    </div>
+    
+    <div id="loading" class="loading">
+      <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+      <p>Loading shop data...</p>
+    </div>
+    
+    <div id="shop-list"></div>
+  </div>
+  
+  <footer>
+    <div class="container">
+      <p>Remember to use Creator Code: <strong>TaborTime</strong></p>
+      <p>© 2025 FNSHOP by PolyExtender. Not affiliated with Epic Games.</p>
+      <p>Fortnite is a registered trademark of Epic Games, Inc.</p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show support creator toast
+      M.toast({
+        html: '<i class="fas fa-star"></i> Please use Creator Code: <strong>TaborTime</strong>',
+        classes: 'rounded',
+        displayLength: 6000
+      });
+
+      // Fetch the Fortnite shop data
+      fetch('https://fortnite-api.com/v2/shop/br')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Validate response status
+          if (data.status !== 200 || !data.data) {
+            throw new Error('Invalid API response');
+          }
+
+          // Hide loading indicator
+          document.getElementById('loading').style.display = 'none';
+          
+          // Update shop date
+          const shopDate = data.data.date && moment(data.data.date).isValid()
+            ? moment(data.data.date).format('MMMM D, YYYY')
+            : 'Unknown Date';
+          document.getElementById('shop-date').innerHTML = `<i class="fas fa-calendar-alt"></i> Shop for ${shopDate}`;
+          
+          const shopListContainer = document.getElementById('shop-list');
+          
+          // Define sections to process based on API documentation
+          const sections = [
+            { name: 'Featured Items', entries: data.data.featured?.entries, icon: 'fas fa-star' },
+            { name: 'Daily Items', entries: data.data.daily?.entries, icon: 'fas fa-sun' },
+            { name: 'Special Featured Items', entries: data.data.specialFeatured?.entries, icon: 'fas fa-gem' },
+            { name: 'Special Daily Items', entries: data.data.specialDaily?.entries, icon: 'fas fa-medal' }
+          ];
+          
+          // Process each section
+          sections.forEach(section => {
+            processSectionEntries(section.name, section.entries, shopListContainer, section.icon);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          document.getElementById('loading').innerHTML = `
+            <div class="red-text">
+              <i class="fas fa-exclamation-triangle fa-3x"></i>
+              <p>Failed to load shop data. Please try again later.</p>
+              <p>Error: ${error.message}</p>
+              <button class="btn waves-effect waves-light" style="background-color: var(--primary-color);" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i> Retry
+              </button>
+            </div>
+          `;
+        });
+    });
+
+    // Map API rarity values to CSS classes
+    const rarityMap = {
+      common: 'common',
+      uncommon: 'uncommon',
+      rare: 'rare',
+      epic: 'epic',
+      legendary: 'legendary',
+      mythic: 'mythic',
+      marvel: 'marvel',
+      dc: 'dc',
+      icon: 'icon',
+      frozen: 'frozen',
+      lava: 'lava',
+      slurp: 'slurp',
+      shadow: 'shadow',
+      dark: 'dark',
+      starwars: 'starwars',
+      gaming: 'gaming'
+    };
+
+    function processSectionEntries(sectionName, entries, container, icon = 'fas fa-shopping-cart') {
+      if (!entries || !Array.isArray(entries) || entries.length === 0) {
+        return;
+      }
+      
+      // Create section container
+      const section = document.createElement('div');
+      section.className = 'section';
+      section.innerHTML = `<h4><i class="${icon}"></i> ${sectionName}</h4>`;
+      
+      // Create grid for items
+      const itemGrid = document.createElement('div');
+      itemGrid.className = 'item-grid';
+      
+      // Process each entry
+      entries.forEach(entry => {
+        if (!entry?.items || !Array.isArray(entry.items) || entry.items.length === 0) {
+          return;
+        }
+        
+        // Create item element
+        const item = document.createElement('div');
+        item.className = 'collection-item';
+        
+        // Get the first item for the name and image
+        const firstItem = entry.items[0];
+        
+        // Determine rarity class
+        const rarityValue = firstItem?.rarity?.value?.toLowerCase() || 'common';
+        const rarityClass = rarityMap[rarityValue] || 'common';
+        
+        // Format prices
+        const regularPrice = entry.regularPrice ?? 0;
+        const finalPrice = entry.finalPrice ?? 0;
+        const discount = regularPrice > finalPrice 
+          ? `<p><s>${regularPrice} V-Bucks</s> <span class="vbucks">${finalPrice}</span></p>` 
+          : `<p><span class="vbucks">${finalPrice}</span></p>`;
+        
+        // Format bundle info
+        let bundleInfo = '';
+        if (entry.bundle) {
+          bundleInfo = `
+            <div class="bundle-info">
+              <h6><i class="fas fa-box-open"></i> ${entry.bundle.name ?? 'Bundle'}</h6>
+              <p>${entry.bundle.info ?? 'No additional info'}</p>
+            </div>
+          `;
+        }
+        
+        // Format item date
+        const dateAdded = firstItem?.added && moment(firstItem.added).isValid()
+          ? moment(firstItem.added).format('MMMM D, YYYY')
+          : 'Unknown';
+        
+        // Sanitize item name to prevent XSS
+        const safeItemName = firstItem.name 
+          ? firstItem.name.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          : 'Unknown Item';
+        
+        // Build the HTML content
+        item.innerHTML = `
+          <div class="title">${safeItemName}</div>
+          <div class="image-container">
+            <img 
+              src="${firstItem?.images?.icon || firstItem?.images?.smallIcon || 'https://api.placeholder.com/150?text=No+Image'}" 
+              class="item-image ${rarityClass}-border" 
+              alt="${safeItemName}" 
+              loading="lazy" 
+              onerror="this.classList.add('error'); this.src='https://api.placeholder.com/150?text=No+Image';"
+            >
+          </div>
+          <div class="item-details">
+            <p class="${rarityClass}"><i class="fas fa-certificate"></i> ${firstItem?.rarity?.displayValue || 'Common'}</p>
+            <p><i class="fas fa-tag"></i> ${firstItem?.type?.displayValue || 'Item'}</p>
+            ${discount}
+            <p><i class="fas fa-calendar-plus"></i> Added: ${dateAdded}</p>
+            ${entry.items.length > 1 ? 
+              `<span class="badge"><i class="fas fa-layer-group"></i> Bundle: ${entry.items.length} items</span>` : ''}
+            ${bundleInfo}
+          </div>
+        `;
+        
+        // Add item to the grid
+        itemGrid.appendChild(item);
+      });
+      
+      // Only append the section if it contains items
+      if (itemGrid.children.length > 0) {
+        section.appendChild(itemGrid);
+        container.appendChild(section);
+      }
+    }
+  </script>
+</body>
+</html>
